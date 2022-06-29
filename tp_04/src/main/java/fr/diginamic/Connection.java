@@ -80,11 +80,12 @@ public class Connection {
         em.persist(assuranceVie);
         em.getTransaction().commit();
 
-        Client client1 = em.find(Client.class, 1L);
+//        Client client1 = em.find(Client.class, 1L);
         Compte compte = em.find(Compte.class, 1L);
 //        Banque banque1 = em.find(Banque.class, 1L);
 //        LivretA livretA1 = (LivretA) em.find(Compte.class, 1L);
 //        Virement virement1 = (Virement) em.find(Operation.class, 1L);
+//        System.out.println(client1.toString());
         System.out.println(compte.toString());
 //        System.out.println(banque1.toString());
 //        System.out.println(livretA1.toString());
