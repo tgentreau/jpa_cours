@@ -10,12 +10,14 @@ import fr.openfoodfacts.entities.Produit;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.TypedQuery;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ProduitManager {
     private static volatile ProduitManager instance = null;
     EntityManager em = null;
 
-    private ProduitManager() {
+    public ProduitManager() {
         EntityManagerFactory emf = DAOFactory.getFactory();
         em = emf.createEntityManager();
     }
@@ -50,6 +52,7 @@ public class ProduitManager {
     }
 
     public void addProduit(Produit produit)  {
+        em.getTransaction().begin();
         Marque marque = getMarque(produit.getMarque().getLibelle());
         Categorie categorie = getCategorie(produit.getCategorie().getLibelle());
 
@@ -59,6 +62,9 @@ public class ProduitManager {
         if(categorie != null) {
             produit.setCategorie(categorie);
         }
+    //    em.flush();
+        //   em.clear();
         em.persist(produit);
+        em.getTransaction().commit();
     }
 }

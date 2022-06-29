@@ -15,46 +15,53 @@ public class Produit {
 
     private String nom;
 
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @ManyToOne(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_categorie")
     private Categorie categorie;
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @ManyToOne(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_marque")
     private Marque marque;
     private Character scoreNutritionnel;
-    private Double energie;
-    private Double graisse;
-    private Double sucres;
-    private Double fibre;
-    private Double proteines;
-    private Double sel;
-    private Double vitA;
-    private Double vitD;
-    private Double vitE;
-    private Double vitK;
-    private Double vitC;
-    private Double vitB;
-    private Double vitB1;
-    private Double vitB2;
-    private Double vitPP;
-    private Double vitB6;
-    private Double vitB9;
-    private Double vitB12;
-    private Double calcium;
-    private Double magnesium;
-    private Double iron;
-    private Double fer;
-    private Double betaCarotene;
+    private String energie;
+    private String graisse;
+    private String sucres;
+    private String fibre;
+    private String proteines;
+    private String sel;
+    private String vitA;
+    private String vitD;
+    private String vitE;
+    private String vitK;
+    private String vitC;
+    private String vitB;
+    private String vitB1;
+    private String vitB2;
+    private String vitPP;
+    private String vitB6;
+    private String vitB9;
+    private String vitB12;
+    private String calcium;
+    private String magnesium;
+    private String iron;
+    private String fer;
+    private String betaCarotene;
     private boolean presenceHuileDePalme;
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.ALL})
     private List<Ingredient> ingredients;
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.ALL})
     private List<Allergene> allergenes;
-    private static List<String> additifs;
+    @ManyToMany(cascade = {CascadeType.ALL})
+    private List<Additif> additifs;
 
     public Produit() {
     }
 
     public long getId() {
         return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getNom() {
@@ -89,187 +96,187 @@ public class Produit {
         this.scoreNutritionnel = scoreNutritionnel;
     }
 
-    public Double getEnergie() {
+    public String getEnergie() {
         return energie;
     }
 
-    public void setEnergie(Double energie) {
+    public void setEnergie(String energie) {
         this.energie = energie;
     }
 
-    public Double getGraisse() {
+    public String getGraisse() {
         return graisse;
     }
 
-    public void setGraisse(Double graisse) {
+    public void setGraisse(String graisse) {
         this.graisse = graisse;
     }
 
-    public Double getSucres() {
+    public String getSucres() {
         return sucres;
     }
 
-    public void setSucres(Double sucres) {
+    public void setSucres(String sucres) {
         this.sucres = sucres;
     }
 
-    public Double getFibre() {
+    public String getFibre() {
         return fibre;
     }
 
-    public void setFibre(Double fibre) {
+    public void setFibre(String fibre) {
         this.fibre = fibre;
     }
 
-    public Double getProteines() {
+    public String getProteines() {
         return proteines;
     }
 
-    public void setProteines(Double proteines) {
+    public void setProteines(String proteines) {
         this.proteines = proteines;
     }
 
-    public Double getSel() {
+    public String getSel() {
         return sel;
     }
 
-    public void setSel(Double sel) {
+    public void setSel(String sel) {
         this.sel = sel;
     }
 
-    public Double getVitA() {
+    public String getVitA() {
         return vitA;
     }
 
-    public void setVitA(Double vitA) {
+    public void setVitA(String vitA) {
         this.vitA = vitA;
     }
 
-    public Double getVitD() {
+    public String getVitD() {
         return vitD;
     }
 
-    public void setVitD(Double vitD) {
+    public void setVitD(String vitD) {
         this.vitD = vitD;
     }
 
-    public Double getVitE() {
+    public String getVitE() {
         return vitE;
     }
 
-    public void setVitE(Double vitE) {
+    public void setVitE(String vitE) {
         this.vitE = vitE;
     }
 
-    public Double getVitK() {
+    public String getVitK() {
         return vitK;
     }
 
-    public void setVitK(Double vitK) {
+    public void setVitK(String vitK) {
         this.vitK = vitK;
     }
 
-    public Double getVitC() {
+    public String getVitC() {
         return vitC;
     }
 
-    public void setVitC(Double vitC) {
+    public void setVitC(String vitC) {
         this.vitC = vitC;
     }
 
-    public Double getVitB() {
+    public String getVitB() {
         return vitB;
     }
 
-    public void setVitB(Double vitB) {
+    public void setVitB(String vitB) {
         this.vitB = vitB;
     }
 
-    public Double getVitB1() {
+    public String getVitB1() {
         return vitB1;
     }
 
-    public void setVitB1(Double vitB1) {
+    public void setVitB1(String vitB1) {
         this.vitB1 = vitB1;
     }
 
-    public Double getVitB2() {
+    public String getVitB2() {
         return vitB2;
     }
 
-    public void setVitB2(Double vitB2) {
+    public void setVitB2(String vitB2) {
         this.vitB2 = vitB2;
     }
 
-    public Double getVitPP() {
+    public String getVitPP() {
         return vitPP;
     }
 
-    public void setVitPP(Double vitPP) {
+    public void setVitPP(String vitPP) {
         this.vitPP = vitPP;
     }
 
-    public Double getVitB6() {
+    public String getVitB6() {
         return vitB6;
     }
 
-    public void setVitB6(Double vitB6) {
+    public void setVitB6(String vitB6) {
         this.vitB6 = vitB6;
     }
 
-    public Double getVitB9() {
+    public String getVitB9() {
         return vitB9;
     }
 
-    public void setVitB9(Double vitB9) {
+    public void setVitB9(String vitB9) {
         this.vitB9 = vitB9;
     }
 
-    public Double getVitB12() {
+    public String getVitB12() {
         return vitB12;
     }
 
-    public void setVitB12(Double vitB12) {
+    public void setVitB12(String vitB12) {
         this.vitB12 = vitB12;
     }
 
-    public Double getCalcium() {
+    public String getCalcium() {
         return calcium;
     }
 
-    public void setCalcium(Double calcium) {
+    public void setCalcium(String calcium) {
         this.calcium = calcium;
     }
 
-    public Double getMagnesium() {
+    public String getMagnesium() {
         return magnesium;
     }
 
-    public void setMagnesium(Double magnesium) {
+    public void setMagnesium(String magnesium) {
         this.magnesium = magnesium;
     }
 
-    public Double getIron() {
+    public String getIron() {
         return iron;
     }
 
-    public void setIron(Double iron) {
+    public void setIron(String iron) {
         this.iron = iron;
     }
 
-    public Double getFer() {
+    public String getFer() {
         return fer;
     }
 
-    public void setFer(Double fer) {
+    public void setFer(String fer) {
         this.fer = fer;
     }
 
-    public Double getBetaCarotene() {
+    public String getBetaCarotene() {
         return betaCarotene;
     }
 
-    public void setBetaCarotene(Double betaCarotene) {
+    public void setBetaCarotene(String betaCarotene) {
         this.betaCarotene = betaCarotene;
     }
 
@@ -297,11 +304,11 @@ public class Produit {
         this.allergenes = allergenes;
     }
 
-    public List<String> getAdditifs() {
+    public List<Additif> getAdditifs() {
         return additifs;
     }
 
-    public void setAdditifs(List<String> additifs) {
+    public void setAdditifs(List<Additif> additifs) {
         this.additifs = additifs;
     }
 

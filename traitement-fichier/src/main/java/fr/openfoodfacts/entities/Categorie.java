@@ -3,6 +3,7 @@ package fr.openfoodfacts.entities;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "Categorie")
@@ -12,6 +13,9 @@ public class Categorie {
     @GenericGenerator(name = "seq", strategy = "increment")
     private long id;
     private String libelle;
+
+    @OneToMany
+    private List<Produit> produits;
 
     public Categorie() {
     }

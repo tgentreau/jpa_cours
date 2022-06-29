@@ -10,70 +10,88 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
 public class App {
 
-    static ProduitManager service;
+    private static final String regex = "\\|";
+
+    static ProduitManager service = new ProduitManager();
     public static void main(String[] args) throws URISyntaxException, IOException {
         //instance classes
         Produit produit1 = new Produit();
         Categorie categorie = new Categorie();
-        Ingredient ingredient = new Ingredient();
         Allergene allergene = new Allergene();
         Marque marque = new Marque();
 
-        //Récupération data csv
+        //Lists
+        List<Ingredient> ingredients = new ArrayList<>();
+        List<Allergene> alergenes = new ArrayList<>();
+        List<Additif> additifs = new ArrayList<>();
         List<String[]> produit = new ArrayList<>();
+
+        //Récupération data csv
         try(Stream<String> stream = Files.lines((Path.of(ClassLoader.getSystemResource("open-food-facts.csv").toURI())), StandardCharsets.UTF_8)) {
             stream.forEach(line -> {
-                produit.add(line.split("\\|"));
+                produit.add(line.split(regex));
             });
 
         }
+
         //Traitement data
         for (String[] s : produit) {
-            if(s.length == 30) {
-                System.out.println(Arrays.toString(s));
+//            "\\."
+            if(s.length == 30 && !s[0].equals(produit.get(0)[0])) {
+                String[] liIngredients = s[4].split(",");
+                for (String liIngredient : liIngredients[0].split(";")) {
+                    Ingredient ingredient = new Ingredient();
+                    ingredient.setLibelle(liIngredient);
+                    ingredients.add(ingredient);
+                }
+                String[] liAdditifs = s[29].split(",");
+                for (String liAdditif : liAdditifs) {
+                    System.out.println(liAdditif);
+                    Additif additif = new Additif();
+                    additif.setLibelle(liAdditif);
+                    additifs.add(additif);
+                }
                 categorie.setLibelle(s[0]);
                 produit1.setCategorie(categorie);
                 marque.setLibelle(s[1]);
                 produit1.setMarque(marque);
                 produit1.setNom(s[2]);
                 produit1.setScoreNutritionnel(s[3].toCharArray()[0]);
-                //ingrédients
-                produit1.setEnergie(Double.valueOf(s[5]));
-                produit1.setGraisse(Double.valueOf(s[6]));
-                produit1.setSucres(Double.valueOf(s[7]));
-                produit1.setFibre(Double.valueOf(s[8]));
-                produit1.setProteines(Double.valueOf(s[9]));
-                produit1.setSel(Double.valueOf(s[10]));
-                produit1.setVitA(Double.valueOf(s[11]));
-                produit1.setVitD(Double.valueOf(s[12]));
-                produit1.setVitE(Double.valueOf(s[13]));
-                produit1.setVitK(Double.valueOf(s[14]));
-                produit1.setVitC(Double.valueOf(s[15]));
-                produit1.setVitB1(Double.valueOf(s[16]));
-                produit1.setVitB2(Double.valueOf(s[17]));
-                produit1.setVitPP(Double.valueOf(s[18]));
-                produit1.setVitB6(Double.valueOf(s[19]));
-                produit1.setVitB9(Double.valueOf(s[20]));
-                produit1.setVitB12(Double.valueOf(s[21]));
-                produit1.setCalcium(Double.valueOf(s[22]));
-                produit1.setMagnesium(Double.valueOf(s[23]));
-                produit1.setIron(Double.valueOf(s[24]));
-                produit1.setFer(Double.valueOf(s[25]));
-                produit1.setBetaCarotene(Double.valueOf(s[26]));
+                produit1.setIngredients(ingredients);
+                produit1.setEnergie(s[5]);
+                produit1.setGraisse(s[6]);
+                produit1.setSucres(s[7]);
+                produit1.setFibre(s[8]);
+                produit1.setProteines(s[9]);
+                produit1.setSel(s[10]);
+                produit1.setVitA(s[11]);
+                produit1.setVitD(s[12]);
+                produit1.setVitE(s[13]);
+                produit1.setVitK(s[14]);
+                produit1.setVitC(s[15]);
+                produit1.setVitB1(s[16]);
+                produit1.setVitB2(s[17]);
+                produit1.setVitPP(s[18]);
+                produit1.setVitB6(s[19]);
+                produit1.setVitB9(s[20]);
+                produit1.setVitB12(s[21]);
+                produit1.setCalcium(s[22]);
+                produit1.setMagnesium(s[23]);
+                produit1.setIron(s[24]);
+                produit1.setFer(s[25]);
+                produit1.setBetaCarotene(s[26]);
                 produit1.setPresenceHuileDePalme(Boolean.parseBoolean(s[27]));
-                //alergenes
-                //additifs
+                produit1.setAllergenes(alergenes);
+                produit1.setAdditifs(additifs);
+
+                service.addProduit(produit1);
             }
         }
-
     }
-
-//    public void sortValues(List<T> list, String s) {
-//
-//    }
 }
