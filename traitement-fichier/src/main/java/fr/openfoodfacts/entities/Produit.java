@@ -12,9 +12,12 @@ public class Produit {
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "seq")
     @GenericGenerator(name = "seq", strategy = "increment")
     private long id;
-    @ManyToMany
+
+    private String nom;
+
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.MERGE}, fetch = FetchType.EAGER)
     private Categorie categorie;
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.MERGE}, fetch = FetchType.EAGER)
     private Marque marque;
     private Character scoreNutritionnel;
     private Double energie;
@@ -54,8 +57,12 @@ public class Produit {
         return id;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public String getNom() {
+        return nom;
+    }
+
+    public void setNom(String nom) {
+        this.nom = nom;
     }
 
     public Categorie getCategorie() {
@@ -302,6 +309,7 @@ public class Produit {
     public String toString() {
         final StringBuilder sb = new StringBuilder("Produit{");
         sb.append("id=").append(id);
+        sb.append(", nom='").append(nom).append('\'');
         sb.append(", categorie=").append(categorie);
         sb.append(", marque=").append(marque);
         sb.append(", scoreNutritionnel=").append(scoreNutritionnel);
@@ -331,7 +339,6 @@ public class Produit {
         sb.append(", presenceHuileDePalme=").append(presenceHuileDePalme);
         sb.append(", ingredients=").append(ingredients);
         sb.append(", allergenes=").append(allergenes);
-        sb.append(", additifs=").append(additifs);
         sb.append('}');
         return sb.toString();
     }
