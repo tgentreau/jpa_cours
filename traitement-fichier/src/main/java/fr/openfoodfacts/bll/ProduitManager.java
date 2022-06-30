@@ -2,16 +2,16 @@ package fr.openfoodfacts.bll;
 
 import fr.openfoodfacts.dal.DALExeption;
 import fr.openfoodfacts.dal.DAOFactory;
-import fr.openfoodfacts.entities.Categorie;
-import fr.openfoodfacts.entities.Ingredient;
-import fr.openfoodfacts.entities.Marque;
-import fr.openfoodfacts.entities.Produit;
+import fr.openfoodfacts.entities.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.TypedQuery;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class ProduitManager {
     private static volatile ProduitManager instance = null;
@@ -51,20 +51,70 @@ public class ProduitManager {
         return query.getResultList().size() > 0 ? query.getResultList().get(0) : null;
     }
 
-    public void addProduit(Produit produit)  {
+    public Allergene getAllergene(String libelle) {
+        TypedQuery<Allergene> query = em.createQuery("select e from Allergene e where e.libelle = :libelle", Allergene.class);
+        query.setParameter("libelle", libelle);
+        return query.getResultList().size() > 0 ? query.getResultList().get(0) : null;
+    }
+
+    public Additif getAdditif(String libelle) {
+        TypedQuery<Additif> query = em.createQuery("select e from Additif e where e.libelle = :libelle", Additif.class);
+        query.setParameter("libelle", libelle);
+        return query.getResultList().size() > 0 ? query.getResultList().get(0) : null;
+    }
+
+    public void addProduit(Produit produit) throws BLLExeption {
         em.getTransaction().begin();
         Marque marque = getMarque(produit.getMarque().getLibelle());
         Categorie categorie = getCategorie(produit.getCategorie().getLibelle());
 
-        if(marque != null) {
-            produit.setMarque(marque);
+        try {
+            //Gestion des doublons
+            if(marque != null) {
+                produit.setMarque(marque);
+                marque.getProduits().add(produit);
+            }
+            if(categorie != null) {
+                produit.setCategorie(categorie);
+                categorie.getProduits().add(produit);
+            }
+
+            produit.setIngredients(produit.getIngredients().stream()
+                    .map(e -> {
+                        Ingredient ingredient = getIngredient(e.getLibelle());
+                        if(ingredient != null) {
+                            ingredient.getProduits().add(produit);
+                            return ingredient;
+                        }
+                        return e;
+                    }) .collect(Collectors.toSet()));
+
+            produit.setAllergenes(produit.getAllergenes().stream()
+                    .map(e -> {
+                        Allergene allergene = getAllergene(e.getLibelle());
+                        if(allergene != null) {
+                            allergene.getProduits().add(produit);
+                            return allergene;
+                        }
+                        return e;
+                    }) .collect(Collectors.toSet()));
+
+            produit.setAdditifs(produit.getAdditifs().stream()
+                    .map(e -> {
+                        Additif additif = getAdditif(e.getLibelle());
+                        if(additif != null) {
+                            additif.getProduits().add(produit);
+                            return additif;
+                        }
+                        return e;
+                    }).collect(Collectors.toSet()));
+
+            em.persist(produit);
+            em.getTransaction().commit();
+        } catch (Exception e) {
+            System.out.println(e);
+            throw e;
         }
-        if(categorie != null) {
-            produit.setCategorie(categorie);
-        }
-    //    em.flush();
-        //   em.clear();
-        em.persist(produit);
-        em.getTransaction().commit();
+
     }
 }

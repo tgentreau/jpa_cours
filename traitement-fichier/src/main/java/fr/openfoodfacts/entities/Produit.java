@@ -3,7 +3,7 @@ package fr.openfoodfacts.entities;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "Produit")
@@ -15,10 +15,10 @@ public class Produit {
 
     private String nom;
 
-    @ManyToOne(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.EAGER)
     @JoinColumn(name = "id_categorie")
     private Categorie categorie;
-    @ManyToOne(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.EAGER)
     @JoinColumn(name = "id_marque")
     private Marque marque;
     private Character scoreNutritionnel;
@@ -46,12 +46,12 @@ public class Produit {
     private String fer;
     private String betaCarotene;
     private boolean presenceHuileDePalme;
-    @ManyToMany(cascade = {CascadeType.ALL})
-    private List<Ingredient> ingredients;
-    @ManyToMany(cascade = {CascadeType.ALL})
-    private List<Allergene> allergenes;
-    @ManyToMany(cascade = {CascadeType.ALL})
-    private List<Additif> additifs;
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    private Set<Ingredient> ingredients;
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    private Set<Allergene> allergenes;
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    private Set<Additif> additifs;
 
     public Produit() {
     }
@@ -288,27 +288,27 @@ public class Produit {
         this.presenceHuileDePalme = presenceHuileDePalme;
     }
 
-    public List<Ingredient> getIngredients() {
+    public Set<Ingredient> getIngredients() {
         return ingredients;
     }
 
-    public void setIngredients(List<Ingredient> ingredients) {
+    public void setIngredients(Set<Ingredient> ingredients) {
         this.ingredients = ingredients;
     }
 
-    public List<Allergene> getAllergenes() {
+    public Set<Allergene> getAllergenes() {
         return allergenes;
     }
 
-    public void setAllergenes(List<Allergene> allergenes) {
+    public void setAllergenes(Set<Allergene> allergenes) {
         this.allergenes = allergenes;
     }
 
-    public List<Additif> getAdditifs() {
+    public Set<Additif> getAdditifs() {
         return additifs;
     }
 
-    public void setAdditifs(List<Additif> additifs) {
+    public void setAdditifs(Set<Additif> additifs) {
         this.additifs = additifs;
     }
 

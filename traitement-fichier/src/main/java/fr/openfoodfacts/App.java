@@ -1,5 +1,6 @@
 package fr.openfoodfacts;
 
+import fr.openfoodfacts.bll.BLLExeption;
 import fr.openfoodfacts.bll.ProduitManager;
 import fr.openfoodfacts.entities.*;
 
@@ -8,90 +9,108 @@ import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Stream;
 
 public class App {
 
     private static final String regex = "\\|";
+    private static final String regexVirgule = ",";
 
     static ProduitManager service = new ProduitManager();
-    public static void main(String[] args) throws URISyntaxException, IOException {
+    public static void main(String[] args) throws URISyntaxException, IOException, BLLExeption {
         //instance classes
-        Produit produit1 = new Produit();
+        Produit produit = new Produit();
         Categorie categorie = new Categorie();
-        Allergene allergene = new Allergene();
         Marque marque = new Marque();
 
         //Lists
-        List<Ingredient> ingredients = new ArrayList<>();
-        List<Allergene> alergenes = new ArrayList<>();
-        List<Additif> additifs = new ArrayList<>();
-        List<String[]> produit = new ArrayList<>();
+        Set<String[]> produits = new HashSet<>();
 
         //Récupération data csv
         try(Stream<String> stream = Files.lines((Path.of(ClassLoader.getSystemResource("open-food-facts.csv").toURI())), StandardCharsets.UTF_8)) {
-            stream.forEach(line -> {
-                produit.add(line.split(regex));
+            stream.skip(1).forEach(line -> {
+                produits.add(line.split(regex));
             });
 
+        } catch (Exception e) {
+            System.out.println(e);
+            throw e;
         }
 
+        int counter = 0;
         //Traitement data
-        for (String[] s : produit) {
+        for (String[] s : produits) {
+            Set<Ingredient> ingredients = new HashSet<>();
+            Set<Allergene> alergenes = new HashSet<>();
+            Set<Additif> additifs = new HashSet<>();
 //            "\\."
-            if(s.length == 30 && !s[0].equals(produit.get(0)[0])) {
-                String[] liIngredients = s[4].split(",");
+            if(s.length == 30) {
+                String[] liIngredients = s[4].split(regexVirgule);
                 for (String liIngredient : liIngredients[0].split(";")) {
                     Ingredient ingredient = new Ingredient();
-                    ingredient.setLibelle(liIngredient);
+                    ingredient.setLibelle(liIngredient.trim());
                     ingredients.add(ingredient);
                 }
-                String[] liAdditifs = s[29].split(",");
+
+                String[] liAdditifs = s[29].split(regexVirgule);
                 for (String liAdditif : liAdditifs) {
-                    System.out.println(liAdditif);
                     Additif additif = new Additif();
-                    additif.setLibelle(liAdditif);
+                    additif.setLibelle(liAdditif.trim());
                     additifs.add(additif);
                 }
-                categorie.setLibelle(s[0]);
-                produit1.setCategorie(categorie);
-                marque.setLibelle(s[1]);
-                produit1.setMarque(marque);
-                produit1.setNom(s[2]);
-                produit1.setScoreNutritionnel(s[3].toCharArray()[0]);
-                produit1.setIngredients(ingredients);
-                produit1.setEnergie(s[5]);
-                produit1.setGraisse(s[6]);
-                produit1.setSucres(s[7]);
-                produit1.setFibre(s[8]);
-                produit1.setProteines(s[9]);
-                produit1.setSel(s[10]);
-                produit1.setVitA(s[11]);
-                produit1.setVitD(s[12]);
-                produit1.setVitE(s[13]);
-                produit1.setVitK(s[14]);
-                produit1.setVitC(s[15]);
-                produit1.setVitB1(s[16]);
-                produit1.setVitB2(s[17]);
-                produit1.setVitPP(s[18]);
-                produit1.setVitB6(s[19]);
-                produit1.setVitB9(s[20]);
-                produit1.setVitB12(s[21]);
-                produit1.setCalcium(s[22]);
-                produit1.setMagnesium(s[23]);
-                produit1.setIron(s[24]);
-                produit1.setFer(s[25]);
-                produit1.setBetaCarotene(s[26]);
-                produit1.setPresenceHuileDePalme(Boolean.parseBoolean(s[27]));
-                produit1.setAllergenes(alergenes);
-                produit1.setAdditifs(additifs);
 
-                service.addProduit(produit1);
+                String[] liAllergenes = s[28].split(regexVirgule);
+                for (String liAllergene : liAllergenes) {
+                    Allergene allergene = new Allergene();
+                    allergene.setLibelle(liAllergene.trim());
+                    alergenes.add(allergene);
+                }
+
+                categorie.setLibelle(s[0]);
+                produit.setCategorie(categorie);
+                marque.setLibelle(s[1]);
+                produit.setMarque(marque);
+                produit.setNom(s[2]);
+                produit.setScoreNutritionnel(s[3].toCharArray()[0]);
+                produit.setIngredients(ingredients);
+                produit.setEnergie(s[5]);
+                produit.setGraisse(s[6]);
+                produit.setSucres(s[7]);
+                produit.setFibre(s[8]);
+                produit.setProteines(s[9]);
+                produit.setSel(s[10]);
+                produit.setVitA(s[11]);
+                produit.setVitD(s[12]);
+                produit.setVitE(s[13]);
+                produit.setVitK(s[14]);
+                produit.setVitC(s[15]);
+                produit.setVitB1(s[16]);
+                produit.setVitB2(s[17]);
+                produit.setVitPP(s[18]);
+                produit.setVitB6(s[19]);
+                produit.setVitB9(s[20]);
+                produit.setVitB12(s[21]);
+                produit.setCalcium(s[22]);
+                produit.setMagnesium(s[23]);
+                produit.setIron(s[24]);
+                produit.setFer(s[25]);
+                produit.setBetaCarotene(s[26]);
+                produit.setPresenceHuileDePalme(Boolean.parseBoolean(s[27]));
+                produit.setAllergenes(alergenes);
+                produit.setAdditifs(additifs);
+
+                try {
+                    service.addProduit(produit);
+                } catch (BLLExeption e) {
+                    throw new BLLExeption("Erreur bll: ",e);
+                }
+
             }
+            if(counter >= 10) {
+                break;
+            }
+            counter ++;
         }
     }
 }
